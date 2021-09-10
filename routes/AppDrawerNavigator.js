@@ -1,8 +1,7 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import ScreenNames from "~/constant/ScreenNames";
-import SettingsScreen from "~/screens/SettingsScreen";
-import HeaderButton from "~/components/HeaderButton";
+import HeaderButton from "~/components/UI/HeaderButton";
 import { Colors } from "~/constant/Colors";
 import {
   MainStackNavigator,

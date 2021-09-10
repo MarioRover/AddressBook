@@ -2,7 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AddressListScreen from "~/screens/AddressListScreen";
 import ScreenNames from "~/constant/ScreenNames";
-import HeaderButton from "~/components/HeaderButton";
+import HeaderButton from "~/components/UI/HeaderButton";
 import NewAddressScreen from "~/screens/NewAddressScreen";
 import { useTheme } from "~/contexts/ThemeContext";
 import { useNavigation } from "@react-navigation/core";
@@ -16,6 +16,7 @@ const screenOptions = (color) => {
       backgroundColor: color.header.background,
     },
     headerTintColor: color.header.title,
+    headerTitleAlign: "center",
   };
 };
 
