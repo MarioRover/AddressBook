@@ -1,22 +1,31 @@
-import React, { useContext } from "react";
-import { View, Text, StyleSheet, useColorScheme, Switch } from "react-native";
+import React from "react";
+import { View, StyleSheet, FlatList } from "react-native";
 import { useTheme } from "~/contexts/ThemeContext";
-import globalStyles from "~/styles/globalStyles";
-import Label from "~/components/UI/Label";
+import { useSelector } from "react-redux";
+import PlaceItem from "~/components/UI/PlaceItem";
 
 export default function AddressListScreen(props) {
   const { color } = useTheme();
+  const selectedPlaces = useSelector((state) => state.places.places);
 
   return (
     <View
       style={{
-        ...globalStyles.centerScreen,
+        ...styles.screen,
         backgroundColor: color.background,
       }}
     >
-      <Label>Address List Page</Label>
+      <FlatList
+        data={selectedPlaces}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <PlaceItem {...item} />}
+      />
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
+});

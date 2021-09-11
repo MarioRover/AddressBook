@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, Switch } from "react-native";
+import { View, StyleSheet, Switch } from "react-native";
 import { useTheme } from "~/contexts/ThemeContext";
-import globalStyles from "~/styles/globalStyles";
 import Row from "~/components/UI/Row";
 import Label from "~/components/UI/Label";
 

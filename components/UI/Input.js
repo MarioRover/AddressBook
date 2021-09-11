@@ -3,7 +3,13 @@ import { View, Text, StyleSheet, TextInput } from "react-native";
 import { Colors } from "~/constant/Colors";
 import { useTheme } from "~/contexts/ThemeContext";
 
-export default function Input({ title, placeholder, required, ...props }) {
+export default function Input({
+  title,
+  placeholder,
+  required,
+  style,
+  ...props
+}) {
   const [isFocus, setIsFocus] = useState(false);
   const { color } = useTheme();
 
@@ -15,6 +21,7 @@ export default function Input({ title, placeholder, required, ...props }) {
       <TextInput
         style={{
           ...styels.input,
+          ...style,
           borderColor: isFocus ? Colors.lightBlue : color.input.border,
           color: color.input.text,
           backgroundColor: color.input.background,

@@ -24,6 +24,10 @@ export const lightColors = {
     border: Colors.midGray,
     palceholder: Colors.midGray,
   },
+  plcaeItem: {
+    background: Colors.midGray,
+    text: Colors.heavyGray,
+  },
 };
 
 export const darkColors = {
@@ -39,5 +43,9 @@ export const darkColors = {
     text: Colors.white,
     border: Colors.heavyGray,
     palceholder: Colors.heavyGray,
+  },
+  plcaeItem: {
+    background: Colors.heavyGray,
+    text: Colors.midGray,
   },
 };
