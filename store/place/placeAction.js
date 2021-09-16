@@ -1,28 +1,39 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as FileSystem from "expo-file-system";
 
+const saveImageToDirectory = async (imagePath) => {
+  try {
+    let newPatch = null;
+    const fileName = imagePath.split("/").pop();
+    newPatch = FileSystem.documentDirectory + fileName;
+
+    await FileSystem.moveAsync({
+      from: imagePath,
+      to: newPatch,
+    });
+    return newPatch;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const addPlaceAction = createAsyncThunk(
   "places/addPlace",
   async (data) => {
-    const { selectedImage } = data;
-    let newPatch = null;
-    if (selectedImage) {
-      const fileName = selectedImage.split("/").pop();
-      newPatch = FileSystem.documentDirectory + fileName;
+    try {
+      const { selectedImage } = data;
+      let imagePath = null;
 
-      try {
-        await FileSystem.moveAsync({
-          from: selectedImage,
-          to: newPatch,
-        });
-      } catch (error) {
-        throw error;
+      if (selectedImage) {
+        imagePath = await saveImageToDirectory(selectedImage);
       }
-    }
 
-    return {
-      ...data,
-      selectedImage: newPatch,
-    };
+      return {
+        ...data,
+        selectedImage: imagePath,
+      };
+    } catch (error) {
+      console.error(error);
+    }
   }
 );

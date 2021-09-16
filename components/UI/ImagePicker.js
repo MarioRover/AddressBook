@@ -9,11 +9,11 @@ import {
 } from "react-native";
 import * as ImgPicker from "expo-image-picker";
 import { useTheme } from "~/contexts/ThemeContext";
-import HeaderButton from "./HeaderButton";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function ImagePicker({ onTakeImage }) {
+export default function ImagePicker({ onTakeImage, selectedImage }) {
   const { color } = useTheme();
-  const [pickedImage, setPickedImage] = useState();
+  const [pickedImage, setPickedImage] = useState(selectedImage);
 
   const verifyPermissionMedia = async () => {
     const { status } = await ImgPicker.requestMediaLibraryPermissionsAsync();
@@ -71,11 +71,7 @@ export default function ImagePicker({ onTakeImage }) {
             />
           ) : (
             <View style={styles.emptyImage}>
-              <HeaderButton
-                name="camera"
-                color={color.input.border}
-                size={50}
-              />
+              <Ionicons name="camera" color={color.input.border} size={50} />
               <Text style={{ ...styles.label, color: color.input.palceholder }}>
                 Upload a Image
               </Text>

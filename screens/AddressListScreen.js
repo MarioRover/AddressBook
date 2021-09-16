@@ -1,12 +1,30 @@
-import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import React, { useEffect, useMemo } from "react";
+import { View, StyleSheet, FlatList, Text, Button } from "react-native";
 import { useTheme } from "~/contexts/ThemeContext";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PlaceItem from "~/components/UI/PlaceItem";
+// import * as LocalAuthentication from "expo-local-authentication";
+import _ from "lodash";
+import { clearAllPlaces } from "~/store/place/placeReducer";
+import globalStyles from "~/styles/globalStyles";
 
 export default function AddressListScreen(props) {
   const { color } = useTheme();
-  const selectedPlaces = useSelector((state) => state.places.places);
+
+  const selectedPlace = useSelector((state) => {
+    return state.places.places;
+  });
+
+  const memoizedPlaces = useMemo(() => {
+    return _.values(selectedPlace);
+  }, [selectedPlace]);
+
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(clearAllPlaces());
+  // }, []);
+
+  // console.log({ memoizedPlaces, selectedPlace });
 
   return (
     <View
@@ -15,11 +33,19 @@ export default function AddressListScreen(props) {
         backgroundColor: color.background,
       }}
     >
-      <FlatList
-        data={selectedPlaces}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PlaceItem {...item} />}
-      />
+      {memoizedPlaces.length ? (
+        <FlatList
+          data={memoizedPlaces}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <PlaceItem {...item} />}
+        />
+      ) : (
+        <View style={{ ...globalStyles.centerScreen }}>
+          <Text style={{ color: color.text, ...styles.text }}>
+            An address has not been created yet
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -27,5 +53,9 @@ export default function AddressListScreen(props) {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

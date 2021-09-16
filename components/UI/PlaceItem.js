@@ -1,33 +1,45 @@
 import React from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
 import { useTheme } from "~/contexts/ThemeContext";
+import TouchableFeedback from "~/components/layout/TouchableFeedback";
+import { useNavigation } from "@react-navigation/core";
+import ScreenNames from "~/constant/ScreenNames";
 
-export default function PlaceItem({ title, address, imageUri }) {
+export default function PlaceItem({ title, address, imageUri, id }) {
   const { color } = useTheme();
+  const navigation = useNavigation();
+
+  const pressPlaceHandle = () => {
+    navigation.navigate(ScreenNames.newAddress, {
+      id,
+    });
+  };
 
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          ...styles.imgContainer,
-          backgroundColor: color.plcaeItem.background,
-        }}
-      >
-        <View style={styles.image}>
-          <Image
-            style={styles.image}
-            source={{ uri: imageUri }}
-            resizeMethod="resize"
-          />
+    <TouchableFeedback onPress={pressPlaceHandle}>
+      <View style={styles.container}>
+        <View
+          style={{
+            ...styles.imgContainer,
+            backgroundColor: color.plcaeItem.background,
+          }}
+        >
+          <View style={styles.image}>
+            <Image
+              style={styles.image}
+              source={{ uri: imageUri }}
+              resizeMethod="resize"
+            />
+          </View>
+        </View>
+        <View style={styles.infoContaienr}>
+          <Text style={{ color: color.text, ...styles.title }}>{title}</Text>
+          <Text style={{ color: color.plcaeItem.text, ...styles.address }}>
+            {address}
+          </Text>
         </View>
       </View>
-      <View style={styles.infoContaienr}>
-        <Text style={{ color: color.text, ...styles.title }}>{title}</Text>
-        <Text style={{ color: color.plcaeItem.text, ...styles.address }}>
-          {address}
-        </Text>
-      </View>
-    </View>
+    </TouchableFeedback>
   );
 }
 
@@ -41,8 +53,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   imgContainer: {
-    width: 55,
-    height: 55,
+    width: 60,
+    height: 60,
     borderRadius: 50,
     marginRight: 10,
     overflow: "hidden",

@@ -6,13 +6,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Vibration,
 } from "react-native";
 import { useTheme } from "~/contexts/ThemeContext";
 import { isEmpty, isEmail, isMobilePhone } from "~/helpers/validator";
 import { useNavigation } from "@react-navigation/core";
 import { Colors } from "~/constant/Colors";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addPlaceAction } from "~/store/place/placeAction";
+import { updatePlace } from "~/store/place/placeReducer";
 
 // Component
 import HeaderButton from "~/components/UI/HeaderButton";
@@ -50,29 +52,40 @@ const formReducer = (state, action) => {
   }
 };
 
-export default function NewAddressScreen() {
+export default function NewAddressScreen({ route }) {
   const { color } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  let selectedPlace;
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  if (route.params && route.params.id) {
+    selectedPlace = useSelector(
+      (state) => state.places.places[route.params.id]
+    );
+  }
+
+  const [selectedImage, setSelectedImage] = useState(
+    selectedPlace && selectedPlace.imageUri
+  );
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
-      title: "",
-      phone: "",
-      email: "",
-      address: "",
-      desc: "",
+      title: selectedPlace ? selectedPlace.title : "",
+      phone: selectedPlace ? selectedPlace.phone : "",
+      email: selectedPlace ? selectedPlace.email : "",
+      address: selectedPlace ? selectedPlace.address : "",
+      desc: selectedPlace ? selectedPlace.desc : "",
     },
     inputvalidaties: {
-      title: false,
+      title: Boolean(selectedPlace),
       phone: true,
       email: true,
       address: true,
       desc: true,
     },
-    formIsValid: false,
+    formIsValid: Boolean(selectedPlace),
   });
+
+  // console.log(formState);
 
   let FormContent = View;
   if (Platform.OS === "ios") {
@@ -112,17 +125,31 @@ export default function NewAddressScreen() {
   };
 
   const handleSubmitForm = () => {
-    if (formState.formIsValid) {
-      dispatch(addPlaceAction({ ...formState.inputValues, selectedImage }));
-    } else {
+    if (!formState.formIsValid) {
+      Vibration.vibrate();
       Alert.alert("Form Validation!", "Please fill field with currect value.", [
         {
           style: "default",
           text: "Okey",
         },
       ]);
+    } else {
+      if (!selectedPlace) {
+        // Create New Place
+        dispatch(addPlaceAction({ ...formState.inputValues, selectedImage }));
+      } else {
+        // Update Place
+        dispatch(
+          updatePlace({
+            ...formState.inputValues,
+            selectedImage,
+            id: selectedPlace.id,
+          })
+        );
+      }
+
+      navigation.navigate(ScreenNames.addressListName);
     }
-    navigation.navigate(ScreenNames.addressListName);
   };
 
   useLayoutEffect(() => {
@@ -147,11 +174,14 @@ export default function NewAddressScreen() {
         <View
           style={{ ...styles.mapView, backgroundColor: color.input.background }}
         >
-          <LocationPicker />
+          {/* <LocationPicker /> */}
         </View>
 
         <View style={{ padding: 15 }}>
-          <ImagePicker onTakeImage={setSelectedImage} />
+          <ImagePicker
+            onTakeImage={setSelectedImage}
+            selectedImage={selectedImage}
+          />
 
           <Input
             title="Title"
