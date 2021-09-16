@@ -7,6 +7,7 @@ import {
   Platform,
   Alert,
   Vibration,
+  SafeAreaView,
 } from "react-native";
 import { useTheme } from "~/contexts/ThemeContext";
 import { isEmpty, isEmail, isMobilePhone } from "~/helpers/validator";
@@ -14,7 +15,7 @@ import { useNavigation } from "@react-navigation/core";
 import { Colors } from "~/constant/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { addPlaceAction } from "~/store/place/placeAction";
-import { updatePlace } from "~/store/place/placeReducer";
+import { updatePlace, deletePlace } from "~/store/place/placeReducer";
 
 // Component
 import HeaderButton from "~/components/UI/HeaderButton";
@@ -22,6 +23,7 @@ import Input from "~/components/UI/Input";
 import ImagePicker from "~/components/UI/ImagePicker";
 import LocationPicker from "~/components/UI/LocationPicker";
 import ScreenNames from "~/constant/ScreenNames";
+import CustomButton from "~/components/UI/CustomButton";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
@@ -84,8 +86,6 @@ export default function NewAddressScreen({ route }) {
     },
     formIsValid: Boolean(selectedPlace),
   });
-
-  // console.log(formState);
 
   let FormContent = View;
   if (Platform.OS === "ios") {
@@ -152,6 +152,15 @@ export default function NewAddressScreen({ route }) {
     }
   };
 
+  const deletePlaceHandler = async () => {
+    await dispatch(
+      deletePlace({
+        id: selectedPlace.id,
+      })
+    );
+    navigation.navigate(ScreenNames.addressListName);
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -165,61 +174,85 @@ export default function NewAddressScreen({ route }) {
   }, [navigation, formState, selectedImage]);
 
   return (
-    <FormContent
+    <SafeAreaView
       style={{ ...styles.screen, backgroundColor: color.background }}
-      behavior="padding"
-      keyboardVerticalOffset={100}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{ ...styles.mapView, backgroundColor: color.input.background }}
-        >
-          {/* <LocationPicker /> */}
-        </View>
+      <FormContent
+        style={{ ...styles.screen, backgroundColor: color.background }}
+        behavior="padding"
+        keyboardVerticalOffset={100}
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View
+            style={{
+              ...styles.mapView,
+              backgroundColor: color.input.background,
+            }}
+          >
+            {/* <LocationPicker /> */}
+          </View>
 
-        <View style={{ padding: 15 }}>
-          <ImagePicker
-            onTakeImage={setSelectedImage}
-            selectedImage={selectedImage}
-          />
+          <View style={{ padding: 15 }}>
+            <ImagePicker
+              onTakeImage={setSelectedImage}
+              selectedImage={selectedImage}
+            />
 
-          <Input
-            title="Title"
-            required
-            value={formState.inputValues.title}
-            onChangeText={textChangeInput.bind(this, "title")}
-          />
-          <Input
-            title="Phone"
-            placeholder="123456789"
-            keyboardType="phone-pad"
-            value={formState.inputValues.phone}
-            onChangeText={textChangeInput.bind(this, "phone")}
-          />
-          <Input
-            title="Email"
-            placeholder="example@email.com"
-            keyboardType="email-address"
-            value={formState.inputValues.email}
-            onChangeText={textChangeInput.bind(this, "email")}
-            autoCapitalize="none"
-          />
-          <Input
-            title="Address"
-            multiline
-            value={formState.inputValues.address}
-            onChangeText={textChangeInput.bind(this, "address")}
-          />
-          <Input
-            title="Description"
-            multiline
-            value={formState.inputValues.desc}
-            onChangeText={textChangeInput.bind(this, "desc")}
-            style={{ height: 100 }}
-          />
-        </View>
-      </ScrollView>
-    </FormContent>
+            <Input
+              title="Title"
+              required
+              value={formState.inputValues.title}
+              onChangeText={textChangeInput.bind(this, "title")}
+            />
+            <Input
+              title="Phone"
+              placeholder="123456789"
+              keyboardType="phone-pad"
+              value={formState.inputValues.phone}
+              onChangeText={textChangeInput.bind(this, "phone")}
+            />
+            <Input
+              title="Email"
+              placeholder="example@email.com"
+              keyboardType="email-address"
+              value={formState.inputValues.email}
+              onChangeText={textChangeInput.bind(this, "email")}
+              autoCapitalize="none"
+            />
+            <Input
+              title="Address"
+              multiline
+              value={formState.inputValues.address}
+              onChangeText={textChangeInput.bind(this, "address")}
+            />
+            <Input
+              title="Description"
+              multiline
+              value={formState.inputValues.desc}
+              onChangeText={textChangeInput.bind(this, "desc")}
+              style={{ height: 100 }}
+            />
+            {selectedPlace && (
+              <View style={styles.btnContainer}>
+                <CustomButton
+                  title="Delete"
+                  buttonStyle={{
+                    width: 200,
+                    height: 50,
+                    backgroundColor: Colors.red,
+                    marginBottom: 10,
+                  }}
+                  titleStyle={{
+                    color: Colors.white,
+                  }}
+                  onPress={deletePlaceHandler}
+                />
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </FormContent>
+    </SafeAreaView>
   );
 }
 
@@ -231,5 +264,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 250,
     backgroundColor: "#fff",
+  },
+  btnContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

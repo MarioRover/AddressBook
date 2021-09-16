@@ -2,7 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import PlaceModel from "~/models/placeModel";
 import "react-native-get-random-values";
 import { v4 as uuid } from "uuid";
-import { addPlaceAction } from "~/store/place/placeAction";
+import {
+  addPlaceAction,
+  clearAllPlacesAction,
+} from "~/store/place/placeAction";
 
 const initialState = {
   places: {},
@@ -12,11 +15,6 @@ const placeSlice = createSlice({
   name: "places",
   initialState,
   reducers: {
-    clearAllPlaces(state) {
-      for (let key in state.places) {
-        delete state.places[key];
-      }
-    },
     updatePlace(state, { payload }) {
       const { title, phone, email, address, desc, selectedImage, id } = payload;
       const newPlace = new PlaceModel(
@@ -30,6 +28,11 @@ const placeSlice = createSlice({
         null
       );
       state.places[id] = newPlace;
+    },
+    deletePlace(state, { payload }) {
+      if (payload.id) {
+        delete state.places[payload.id];
+      }
     },
   },
   extraReducers: (builder) => {
@@ -48,8 +51,13 @@ const placeSlice = createSlice({
       );
       state.places[id] = newPlace;
     });
+    builder.addCase(clearAllPlacesAction.fulfilled, (state) => {
+      for (let key in state.places) {
+        delete state.places[key];
+      }
+    });
   },
 });
 
-export const { clearAllPlaces, updatePlace } = placeSlice.actions;
+export const { updatePlace, deletePlace } = placeSlice.actions;
 export default placeSlice.reducer;

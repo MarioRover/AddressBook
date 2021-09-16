@@ -5,11 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import PlaceItem from "~/components/UI/PlaceItem";
 // import * as LocalAuthentication from "expo-local-authentication";
 import _ from "lodash";
-import { clearAllPlaces } from "~/store/place/placeReducer";
+import { clearAllPlacesAction } from "~/store/place/placeAction";
 import globalStyles from "~/styles/globalStyles";
 
 export default function AddressListScreen(props) {
   const { color } = useTheme();
+  const dispatch = useDispatch();
 
   const selectedPlace = useSelector((state) => {
     return state.places.places;
@@ -18,11 +19,6 @@ export default function AddressListScreen(props) {
   const memoizedPlaces = useMemo(() => {
     return _.values(selectedPlace);
   }, [selectedPlace]);
-
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(clearAllPlaces());
-  // }, []);
 
   // console.log({ memoizedPlaces, selectedPlace });
 
@@ -33,6 +29,10 @@ export default function AddressListScreen(props) {
         backgroundColor: color.background,
       }}
     >
+      {/* <Button
+        title="Clear State"
+        onPress={() => dispatch(clearAllPlacesAction())}
+      /> */}
       {memoizedPlaces.length ? (
         <FlatList
           data={memoizedPlaces}
