@@ -1,12 +1,12 @@
 import React from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
-import { useTheme } from "~/contexts/ThemeContext";
+import { useAppContext } from "~/contexts/AppContext";
 import TouchableFeedback from "~/components/layout/TouchableFeedback";
 import { useNavigation } from "@react-navigation/core";
 import ScreenNames from "~/constant/ScreenNames";
 
 export default function PlaceItem({ title, address, imageUri, id }) {
-  const { color } = useTheme();
+  const { appColors } = useAppContext();
   const navigation = useNavigation();
 
   const pressPlaceHandle = () => {
@@ -21,7 +21,7 @@ export default function PlaceItem({ title, address, imageUri, id }) {
         <View
           style={{
             ...styles.imgContainer,
-            backgroundColor: color.plcaeItem.background,
+            backgroundColor: appColors.plcaeItem.background,
           }}
         >
           <View style={styles.image}>
@@ -33,8 +33,10 @@ export default function PlaceItem({ title, address, imageUri, id }) {
           </View>
         </View>
         <View style={styles.infoContaienr}>
-          <Text style={{ color: color.text, ...styles.title }}>{title}</Text>
-          <Text style={{ color: color.plcaeItem.text, ...styles.address }}>
+          <Text style={{ color: appColors.text, ...styles.title }}>
+            {title}
+          </Text>
+          <Text style={{ color: appColors.plcaeItem.text, ...styles.address }}>
             {address}
           </Text>
         </View>

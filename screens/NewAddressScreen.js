@@ -1,4 +1,10 @@
-import React, { useState, useLayoutEffect, useReducer } from "react";
+import React, {
+  useState,
+  useLayoutEffect,
+  useReducer,
+  useEffect,
+  useCallback,
+} from "react";
 import {
   View,
   ScrollView,
@@ -8,8 +14,9 @@ import {
   Alert,
   Vibration,
   SafeAreaView,
+  Button,
 } from "react-native";
-import { useTheme } from "~/contexts/ThemeContext";
+import { useAppContext } from "~/contexts/AppContext";
 import { isEmpty, isEmail, isMobilePhone } from "~/helpers/validator";
 import { useNavigation } from "@react-navigation/core";
 import { Colors } from "~/constant/Colors";
@@ -21,7 +28,7 @@ import { updatePlace, deletePlace } from "~/store/place/placeReducer";
 import HeaderButton from "~/components/UI/HeaderButton";
 import Input from "~/components/UI/Input";
 import ImagePicker from "~/components/UI/ImagePicker";
-import LocationPicker from "~/components/UI/LocationPicker";
+import MapComponent from "~/components/UI/MapComponent";
 import ScreenNames from "~/constant/ScreenNames";
 import CustomButton from "~/components/UI/CustomButton";
 
@@ -55,20 +62,22 @@ const formReducer = (state, action) => {
 };
 
 export default function NewAddressScreen({ route }) {
-  const { color } = useTheme();
+  const { appColors, position } = useAppContext();
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  let selectedPlace;
 
-  if (route.params && route.params.id) {
-    selectedPlace = useSelector(
-      (state) => state.places.places[route.params.id]
-    );
-  }
-
+  const selectedPlace = useSelector((state) => {
+    console.log("CHECK SELECTOR");
+    if (route.params && route.params.id) {
+      return state.places.places[route.params.id];
+    } else {
+      return null;
+    }
+  });
   const [selectedImage, setSelectedImage] = useState(
     selectedPlace && selectedPlace.imageUri
   );
+  const [selectedPosition, setSelectedPosition] = useState(position);
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       title: selectedPlace ? selectedPlace.title : "",
@@ -136,13 +145,20 @@ export default function NewAddressScreen({ route }) {
     } else {
       if (!selectedPlace) {
         // Create New Place
-        dispatch(addPlaceAction({ ...formState.inputValues, selectedImage }));
+        dispatch(
+          addPlaceAction({
+            ...formState.inputValues,
+            selectedImage,
+            selectedPosition,
+          })
+        );
       } else {
         // Update Place
         dispatch(
           updatePlace({
             ...formState.inputValues,
             selectedImage,
+            selectedPosition,
             id: selectedPlace.id,
           })
         );
@@ -161,24 +177,34 @@ export default function NewAddressScreen({ route }) {
     navigation.navigate(ScreenNames.addressListName);
   };
 
+  const checkParams = useCallback(() => {
+    if (route.params && route.params.position) {
+      setSelectedPosition(route.params.position);
+    }
+  }, [route]);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <HeaderButton
-          name="ios-save"
+          title="Save"
           color={Colors.lightBlue}
           onPress={handleSubmitForm}
         />
       ),
     });
-  }, [navigation, formState, selectedImage]);
+  }, [navigation, formState, selectedImage, selectedPosition]);
+
+  useEffect(() => {
+    checkParams();
+  }, [route]);
 
   return (
     <SafeAreaView
-      style={{ ...styles.screen, backgroundColor: color.background }}
+      style={{ ...styles.screen, backgroundColor: appColors.background }}
     >
       <FormContent
-        style={{ ...styles.screen, backgroundColor: color.background }}
+        style={{ ...styles.screen, backgroundColor: appColors.background }}
         behavior="padding"
         keyboardVerticalOffset={100}
       >
@@ -186,13 +212,18 @@ export default function NewAddressScreen({ route }) {
           <View
             style={{
               ...styles.mapView,
-              backgroundColor: color.input.background,
+              backgroundColor: appColors.input.background,
             }}
           >
-            {/* <LocationPicker /> */}
+            <MapComponent freez={true} markerPosition={selectedPosition} />
           </View>
 
           <View style={{ padding: 15 }}>
+            <Button
+              title="MAP PAGE"
+              onPress={() => navigation.navigate(ScreenNames.map)}
+            />
+
             <ImagePicker
               onTakeImage={setSelectedImage}
               selectedImage={selectedImage}

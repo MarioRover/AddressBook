@@ -8,11 +8,11 @@ import {
   Image,
 } from "react-native";
 import * as ImgPicker from "expo-image-picker";
-import { useTheme } from "~/contexts/ThemeContext";
+import { useAppContext } from "~/contexts/AppContext";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ImagePicker({ onTakeImage, selectedImage }) {
-  const { color } = useTheme();
+  const { appColors } = useAppContext();
   const [pickedImage, setPickedImage] = useState(selectedImage);
 
   const verifyPermissionMedia = async () => {
@@ -59,8 +59,8 @@ export default function ImagePicker({ onTakeImage, selectedImage }) {
         <View
           style={{
             ...styles.pickerWrap,
-            backgroundColor: color.input.background,
-            borderColor: color.input.border,
+            backgroundColor: appColors.input.background,
+            borderColor: appColors.input.border,
           }}
         >
           {pickedImage ? (
@@ -71,8 +71,14 @@ export default function ImagePicker({ onTakeImage, selectedImage }) {
             />
           ) : (
             <View style={styles.emptyImage}>
-              <Ionicons name="camera" color={color.input.border} size={50} />
-              <Text style={{ ...styles.label, color: color.input.palceholder }}>
+              <Ionicons
+                name="camera"
+                color={appColors.input.border}
+                size={50}
+              />
+              <Text
+                style={{ ...styles.label, color: appColors.input.palceholder }}
+              >
                 Upload a Image
               </Text>
             </View>

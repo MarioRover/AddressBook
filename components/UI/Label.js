@@ -1,11 +1,11 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
-import { useTheme } from "~/contexts/ThemeContext";
+import { useAppContext } from "~/contexts/AppContext";
 
 export default function Label({ style, children }) {
-  const { color } = useTheme();
+  const { appColors } = useAppContext();
   return (
-    <Text style={{ ...style, ...styles.text, color: color.text }}>
+    <Text style={{ ...style, ...styles.text, color: appColors.text }}>
       {children}
     </Text>
   );

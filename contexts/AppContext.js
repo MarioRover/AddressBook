@@ -2,15 +2,18 @@ import React, { useState, useContext, useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { lightColors, darkColors } from "~/constant/Colors";
 
-const ThemeContext = React.createContext({
+const AppContext = React.createContext({
   isDark: false,
-  color: lightColors,
+  appColors: lightColors,
+  position: null,
   toggleTheme: () => {},
+  setPosition: () => {},
 });
 
-export const ThemeProvider = (props) => {
+export const ContextProvider = (props) => {
   const colorSchema = useColorScheme();
   const [isDark, setIsDark] = useState(colorSchema === "dark");
+  const [position, _setPosition] = useState(null);
 
   useEffect(() => {
     setIsDark(colorSchema);
@@ -18,15 +21,17 @@ export const ThemeProvider = (props) => {
 
   const defaultValue = {
     isDark,
-    color: isDark ? darkColors : lightColors,
+    appColors: isDark ? darkColors : lightColors,
+    position,
     toggleTheme: (value) => setIsDark(value === "dark"),
+    setPosition: (value) => _setPosition(value),
   };
 
   return (
-    <ThemeContext.Provider value={defaultValue}>
+    <AppContext.Provider value={defaultValue}>
       {props.children}
-    </ThemeContext.Provider>
+    </AppContext.Provider>
   );
 };
 
-export const useTheme = () => useContext(ThemeContext);
+export const useAppContext = () => useContext(AppContext);

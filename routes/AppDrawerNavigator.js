@@ -7,7 +7,6 @@ import {
   MainStackNavigator,
   SettingsStackNavigator,
 } from "./AppStackNavigator";
-import { useTheme } from "~/contexts/ThemeContext";
 
 const Drawer = createDrawerNavigator();
 
@@ -16,8 +15,6 @@ const DrawerIcons = ({ name }) => {
 };
 
 export default function AppDrawerNavigator() {
-  const { color } = useTheme();
-
   return (
     <Drawer.Navigator
       screenOptions={{

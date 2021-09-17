@@ -4,9 +4,10 @@ import AddressListScreen from "~/screens/AddressListScreen";
 import ScreenNames from "~/constant/ScreenNames";
 import HeaderButton from "~/components/UI/HeaderButton";
 import NewAddressScreen from "~/screens/NewAddressScreen";
-import { useTheme } from "~/contexts/ThemeContext";
+import { useAppContext } from "~/contexts/AppContext";
 import { useNavigation } from "@react-navigation/core";
 import SettingsScreen from "~/screens/SettingsScreen";
+import MapScreen from "~/screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,22 +22,22 @@ const screenOptions = (color) => {
 };
 
 const DrawerToggleIcon = () => {
-  const { color } = useTheme();
+  const { appColors } = useAppContext();
   const navigation = useNavigation();
 
   return (
     <HeaderButton
       name="menu"
-      color={color.header.title}
+      color={appColors.header.title}
       onPress={() => navigation.toggleDrawer()}
     />
   );
 };
 
 export function MainStackNavigator() {
-  const { color } = useTheme();
+  const { appColors } = useAppContext();
   return (
-    <Stack.Navigator screenOptions={screenOptions(color)}>
+    <Stack.Navigator screenOptions={screenOptions(appColors)}>
       <Stack.Screen
         name={ScreenNames.addressListName}
         component={AddressListScreen}
@@ -45,7 +46,7 @@ export function MainStackNavigator() {
           headerRight: () => (
             <HeaderButton
               name="add"
-              color={color.header.title}
+              color={appColors.header.title}
               onPress={() => navigation.navigate(ScreenNames.newAddress)}
             />
           ),
@@ -60,14 +61,22 @@ export function MainStackNavigator() {
           title: "New Address",
         }}
       />
+
+      <Stack.Screen
+        name={ScreenNames.map}
+        component={MapScreen}
+        options={{
+          title: "Map",
+        }}
+      />
     </Stack.Navigator>
   );
 }
 
 export function SettingsStackNavigator() {
-  const { color } = useTheme();
+  const { appColors } = useAppContext();
   return (
-    <Stack.Navigator screenOptions={screenOptions(color)}>
+    <Stack.Navigator screenOptions={screenOptions(appColors)}>
       <Stack.Screen
         name={ScreenNames.settings}
         component={SettingsScreen}

@@ -16,16 +16,15 @@ const placeSlice = createSlice({
   initialState,
   reducers: {
     updatePlace(state, { payload }) {
-      const { title, phone, email, address, desc, selectedImage, id } = payload;
       const newPlace = new PlaceModel(
-        id,
-        title,
-        phone,
-        email,
-        address,
-        desc,
-        selectedImage,
-        null
+        payload.id,
+        payload.title,
+        payload.phone,
+        payload.email,
+        payload.address,
+        payload.desc,
+        payload.selectedImage,
+        payload.selectedPosition
       );
       state.places[id] = newPlace;
     },
@@ -37,17 +36,16 @@ const placeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(addPlaceAction.fulfilled, (state, { payload }) => {
-      const { title, phone, email, address, desc, selectedImage } = payload;
       const id = uuid();
       const newPlace = new PlaceModel(
         id,
-        title,
-        phone,
-        email,
-        address,
-        desc,
-        selectedImage,
-        null
+        payload.title,
+        payload.phone,
+        payload.email,
+        payload.address,
+        payload.desc,
+        payload.selectedImage,
+        payload.selectedPosition
       );
       state.places[id] = newPlace;
     });

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { View, StyleSheet, FlatList, Text, Button } from "react-native";
-import { useTheme } from "~/contexts/ThemeContext";
+import { useAppContext } from "~/contexts/AppContext";
 import { useDispatch, useSelector } from "react-redux";
 import PlaceItem from "~/components/UI/PlaceItem";
 // import * as LocalAuthentication from "expo-local-authentication";
@@ -9,7 +9,7 @@ import { clearAllPlacesAction } from "~/store/place/placeAction";
 import globalStyles from "~/styles/globalStyles";
 
 export default function AddressListScreen(props) {
-  const { color } = useTheme();
+  const { appColors } = useAppContext();
   const dispatch = useDispatch();
 
   const selectedPlace = useSelector((state) => {
@@ -20,13 +20,11 @@ export default function AddressListScreen(props) {
     return _.values(selectedPlace);
   }, [selectedPlace]);
 
-  // console.log({ memoizedPlaces, selectedPlace });
-
   return (
     <View
       style={{
         ...styles.screen,
-        backgroundColor: color.background,
+        backgroundColor: appColors.background,
       }}
     >
       {/* <Button
@@ -41,7 +39,7 @@ export default function AddressListScreen(props) {
         />
       ) : (
         <View style={{ ...globalStyles.centerScreen }}>
-          <Text style={{ color: color.text, ...styles.text }}>
+          <Text style={{ color: appColors.text, ...styles.text }}>
             An address has not been created yet
           </Text>
         </View>

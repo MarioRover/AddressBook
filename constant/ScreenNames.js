@@ -4,4 +4,5 @@ export default {
   addressListName: "addressListName",
   newAddress: "newAddress",
   settings: "settings",
+  map: "map",
 };

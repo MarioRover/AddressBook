@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 import { Colors } from "~/constant/Colors";
-import { useTheme } from "~/contexts/ThemeContext";
+import { useAppContext } from "~/contexts/AppContext";
 
 export default function Input({
   title,
@@ -11,26 +11,26 @@ export default function Input({
   ...props
 }) {
   const [isFocus, setIsFocus] = useState(false);
-  const { color } = useTheme();
+  const { appColors } = useAppContext();
 
   return (
     <View style={styels.container}>
-      <Text style={{ ...styels.label, color: color.input.label }}>
+      <Text style={{ ...styels.label, color: appColors.input.label }}>
         {title} {required && <Text style={styels.required}>*</Text>}
       </Text>
       <TextInput
         style={{
           ...styels.input,
           ...style,
-          borderColor: isFocus ? Colors.lightBlue : color.input.border,
-          color: color.input.text,
-          backgroundColor: color.input.background,
+          borderColor: isFocus ? Colors.lightBlue : appColors.input.border,
+          color: appColors.input.text,
+          backgroundColor: appColors.input.background,
         }}
         autoCorrect={false}
         placeholder={placeholder}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        placeholderTextColor={color.input.palceholder}
+        placeholderTextColor={appColors.input.palceholder}
         {...props}
       />
       {/* <Text style={styels.error}>There is Error</Text> */}
