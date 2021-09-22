@@ -54,7 +54,7 @@ const styels = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 6,
     fontSize: 14,
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 12,
   },
   error: {

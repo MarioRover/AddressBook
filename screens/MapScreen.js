@@ -7,9 +7,15 @@ import ScreenNames from "~/constant/ScreenNames";
 import HeaderButton from "~/components/UI/HeaderButton";
 import { Colors } from "~/constant/Colors";
 
-export default function MapScreen() {
+export default function MapScreen({ route }) {
   const { position } = useAppContext();
   const navigation = useNavigation();
+  const [markerPos, setMarkerPos] = React.useState();
+
+  const setMarkerHandler = (event) => {
+    const { latitude, longitude } = event.nativeEvent.coordinate;
+    setMarkerPos({ latitude, longitude });
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -18,18 +24,31 @@ export default function MapScreen() {
           title="Save"
           color={Colors.lightBlue}
           onPress={() => {
-            navigation.navigate(ScreenNames.newAddress, {
-              position,
+            navigation.navigate({
+              name: ScreenNames.newAddress,
+              params: { markerPos },
+              merge: true,
             });
           }}
         />
       ),
     });
-  }, [navigation]);
+  }, [navigation, markerPos]);
+
+  React.useEffect(() => {
+    if (route.params && route.params.markerPosition) {
+      setMarkerPos(route.params.markerPosition);
+    }
+  }, [route]);
 
   return (
     <View style={styles.screen}>
-      <MapComponent markerPosition={position} markerTitle="Your Place" />
+      <MapComponent
+        region={markerPos}
+        markerPosition={markerPos}
+        markerTitle="Your Place"
+        setMarkerHandler={setMarkerHandler}
+      />
     </View>
   );
 }

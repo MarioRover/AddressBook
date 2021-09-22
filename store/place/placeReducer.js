@@ -26,7 +26,7 @@ const placeSlice = createSlice({
         payload.selectedImage,
         payload.selectedPosition
       );
-      state.places[id] = newPlace;
+      state.places[payload.id] = newPlace;
     },
     deletePlace(state, { payload }) {
       if (payload.id) {

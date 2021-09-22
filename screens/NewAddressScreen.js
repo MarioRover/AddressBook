@@ -14,7 +14,7 @@ import {
   Alert,
   Vibration,
   SafeAreaView,
-  Button,
+  Text,
 } from "react-native";
 import { useAppContext } from "~/contexts/AppContext";
 import { isEmpty, isEmail, isMobilePhone } from "~/helpers/validator";
@@ -28,7 +28,6 @@ import { updatePlace, deletePlace } from "~/store/place/placeReducer";
 import HeaderButton from "~/components/UI/HeaderButton";
 import Input from "~/components/UI/Input";
 import ImagePicker from "~/components/UI/ImagePicker";
-import MapComponent from "~/components/UI/MapComponent";
 import ScreenNames from "~/constant/ScreenNames";
 import CustomButton from "~/components/UI/CustomButton";
 
@@ -67,7 +66,6 @@ export default function NewAddressScreen({ route }) {
   const dispatch = useDispatch();
 
   const selectedPlace = useSelector((state) => {
-    console.log("CHECK SELECTOR");
     if (route.params && route.params.id) {
       return state.places.places[route.params.id];
     } else {
@@ -77,7 +75,9 @@ export default function NewAddressScreen({ route }) {
   const [selectedImage, setSelectedImage] = useState(
     selectedPlace && selectedPlace.imageUri
   );
-  const [selectedPosition, setSelectedPosition] = useState(position);
+  const [selectedPosition, setSelectedPosition] = useState(
+    selectedPlace ? selectedPlace.location : null
+  );
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       title: selectedPlace ? selectedPlace.title : "",
@@ -178,8 +178,8 @@ export default function NewAddressScreen({ route }) {
   };
 
   const checkParams = useCallback(() => {
-    if (route.params && route.params.position) {
-      setSelectedPosition(route.params.position);
+    if (route.params && route.params.markerPos) {
+      setSelectedPosition(route.params.markerPos);
     }
   }, [route]);
 
@@ -209,75 +209,81 @@ export default function NewAddressScreen({ route }) {
         keyboardVerticalOffset={100}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View
-            style={{
-              ...styles.mapView,
-              backgroundColor: appColors.input.background,
-            }}
-          >
-            <MapComponent freez={true} markerPosition={selectedPosition} />
-          </View>
-
           <View style={{ padding: 15 }}>
-            <Button
-              title="MAP PAGE"
-              onPress={() => navigation.navigate(ScreenNames.map)}
-            />
-
             <ImagePicker
               onTakeImage={setSelectedImage}
               selectedImage={selectedImage}
             />
 
-            <Input
-              title="Title"
-              required
-              value={formState.inputValues.title}
-              onChangeText={textChangeInput.bind(this, "title")}
-            />
-            <Input
-              title="Phone"
-              placeholder="123456789"
-              keyboardType="phone-pad"
-              value={formState.inputValues.phone}
-              onChangeText={textChangeInput.bind(this, "phone")}
-            />
-            <Input
-              title="Email"
-              placeholder="example@email.com"
-              keyboardType="email-address"
-              value={formState.inputValues.email}
-              onChangeText={textChangeInput.bind(this, "email")}
-              autoCapitalize="none"
-            />
-            <Input
-              title="Address"
-              multiline
-              value={formState.inputValues.address}
-              onChangeText={textChangeInput.bind(this, "address")}
-            />
-            <Input
-              title="Description"
-              multiline
-              value={formState.inputValues.desc}
-              onChangeText={textChangeInput.bind(this, "desc")}
-              style={{ height: 100 }}
-            />
+            <View style={styles.btnContainer}>
+              <CustomButton
+                buttonStyle={{
+                  width: 200,
+                  height: 50,
+                  backgroundColor: Colors.lightBlue,
+                  marginVertical: 20,
+                }}
+                onPress={() =>
+                  navigation.navigate(ScreenNames.map, {
+                    markerPosition: selectedPosition,
+                  })
+                }
+              >
+                <Text style={styles.btnTitle}>
+                  {`${selectedPosition ? "Change" : "Set"} Map Position`}
+                </Text>
+              </CustomButton>
+            </View>
+
+            <View style={styles.form}>
+              <Input
+                title="Title"
+                required
+                value={formState.inputValues.title}
+                onChangeText={textChangeInput.bind(this, "title")}
+              />
+              <Input
+                title="Phone"
+                placeholder="123456789"
+                keyboardType="phone-pad"
+                value={formState.inputValues.phone}
+                onChangeText={textChangeInput.bind(this, "phone")}
+              />
+              <Input
+                title="Email"
+                placeholder="example@email.com"
+                keyboardType="email-address"
+                value={formState.inputValues.email}
+                onChangeText={textChangeInput.bind(this, "email")}
+                autoCapitalize="none"
+              />
+              <Input
+                title="Address"
+                multiline
+                value={formState.inputValues.address}
+                onChangeText={textChangeInput.bind(this, "address")}
+              />
+              <Input
+                title="Description"
+                multiline
+                value={formState.inputValues.desc}
+                onChangeText={textChangeInput.bind(this, "desc")}
+                style={{ height: 100 }}
+              />
+            </View>
             {selectedPlace && (
               <View style={styles.btnContainer}>
                 <CustomButton
-                  title="Delete"
                   buttonStyle={{
                     width: 200,
                     height: 50,
                     backgroundColor: Colors.red,
-                    marginBottom: 10,
-                  }}
-                  titleStyle={{
-                    color: Colors.white,
+                    marginVertical: 20,
                   }}
                   onPress={deletePlaceHandler}
-                />
+                >
+                  <Text style={styles.btnTitle}>Delete</Text>
+                </CustomButton>
               </View>
             )}
           </View>
@@ -291,14 +297,17 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-  mapView: {
-    width: "100%",
-    height: 250,
-    backgroundColor: "#fff",
+  form: {
+    flexDirection: "column",
   },
   btnContainer: {
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  btnTitle: {
+    color: Colors.white,
+    fontSize: 14,
+    fontWeight: "700",
   },
 });

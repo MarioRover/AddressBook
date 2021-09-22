@@ -3,16 +3,14 @@ import { View, Text, StyleSheet } from "react-native";
 import TouchableFeedback from "~/components/layout/TouchableFeedback";
 
 export default function CustomButton({
-  title,
   buttonStyle,
   titleStyle,
+  children,
   ...props
 }) {
   return (
     <TouchableFeedback {...props}>
-      <View style={{ ...styles.button, ...buttonStyle }}>
-        <Text style={{ ...styles.title, ...titleStyle }}>{title}</Text>
-      </View>
+      <View style={{ ...styles.button, ...buttonStyle }}>{children}</View>
     </TouchableFeedback>
   );
 }
@@ -25,9 +23,5 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     borderRadius: 3,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "700",
   },
 });
