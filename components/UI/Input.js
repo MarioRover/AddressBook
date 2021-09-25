@@ -8,6 +8,7 @@ export default function Input({
   placeholder,
   required,
   style,
+  validation = true,
   ...props
 }) {
   const [isFocus, setIsFocus] = useState(false);
@@ -22,7 +23,11 @@ export default function Input({
         style={{
           ...styels.input,
           ...style,
-          borderColor: isFocus ? Colors.lightBlue : appColors.input.border,
+          borderColor: validation
+            ? isFocus
+              ? Colors.lightBlue
+              : appColors.input.border
+            : Colors.red,
           color: appColors.input.text,
           backgroundColor: appColors.input.background,
         }}

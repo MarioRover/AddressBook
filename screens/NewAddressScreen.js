@@ -111,13 +111,13 @@ export default function NewAddressScreen({ route }) {
         }
         break;
       case "email":
-        if (!isEmail(text)) {
+        if (!isEmpty(text) && !isEmail(text)) {
           isValid = false;
         }
         break;
 
       case "phone":
-        if (!isMobilePhone(text, "fa-IR")) {
+        if (!isEmpty(text) && !isMobilePhone(text, "fa-IR")) {
           isValid = false;
         }
         break;
@@ -236,40 +236,19 @@ export default function NewAddressScreen({ route }) {
             </View>
 
             <View style={styles.form}>
-              <Input
-                title="Title"
-                required
-                value={formState.inputValues.title}
-                onChangeText={textChangeInput.bind(this, "title")}
-              />
-              <Input
-                title="Phone"
-                placeholder="123456789"
-                keyboardType="phone-pad"
-                value={formState.inputValues.phone}
-                onChangeText={textChangeInput.bind(this, "phone")}
-              />
-              <Input
-                title="Email"
-                placeholder="example@email.com"
-                keyboardType="email-address"
-                value={formState.inputValues.email}
-                onChangeText={textChangeInput.bind(this, "email")}
-                autoCapitalize="none"
-              />
-              <Input
-                title="Address"
-                multiline
-                value={formState.inputValues.address}
-                onChangeText={textChangeInput.bind(this, "address")}
-              />
-              <Input
-                title="Description"
-                multiline
-                value={formState.inputValues.desc}
-                onChangeText={textChangeInput.bind(this, "desc")}
-                style={{ height: 100 }}
-              />
+              {inputesForm.map((item, index) => (
+                <Input
+                  key={index}
+                  title={item.title}
+                  required={item.required}
+                  value={formState.inputValues[item.key]}
+                  onChangeText={textChangeInput.bind(this, item.key)}
+                  validation={formState.inputvalidaties[item.key]}
+                  autoCapitalize={item.autoCapitalize}
+                  multiline={item.multiline}
+                  style={item.style}
+                />
+              ))}
             </View>
             {selectedPlace && (
               <View style={styles.btnContainer}>
@@ -311,3 +290,41 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+const inputesForm = [
+  {
+    key: "title",
+    title: "Title",
+    required: true,
+    keyboardType: null,
+  },
+  {
+    key: "phone",
+    title: "Phone",
+    required: false,
+    placeholder: "123456789",
+    keyboardType: "phone-pad",
+  },
+  {
+    key: "email",
+    title: "Email",
+    required: false,
+    placeholder: "123456789",
+    keyboardType: "email-address",
+    autoCapitalize: "none",
+  },
+  {
+    key: "address",
+    title: "Address",
+    required: false,
+  },
+  {
+    key: "desc",
+    title: "Description",
+    required: false,
+    style: {
+      height: 100,
+    },
+    multiline: true,
+  },
+];

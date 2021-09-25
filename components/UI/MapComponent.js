@@ -1,8 +1,6 @@
-import React, { useLayoutEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
+import React from "react";
 import { StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { Colors } from "~/constant/Colors";
 
 const DEFAULT_LATITUDE = 37.327823;
 const DEFAULT_LONGITUDE = -122.01981479;
