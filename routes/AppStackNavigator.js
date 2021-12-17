@@ -2,7 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AddressListScreen from "~/screens/AddressListScreen";
 import ScreenNames from "~/constant/ScreenNames";
-import HeaderButton from "~/components/UI/HeaderButton";
+import HeaderButton from "~/components/common/HeaderButton";
 import NewAddressScreen from "~/screens/NewAddressScreen";
 import { useAppContext } from "~/contexts/AppContext";
 import { useNavigation } from "@react-navigation/core";

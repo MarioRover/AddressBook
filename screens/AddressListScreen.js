@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo } from "react";
-import { View, StyleSheet, FlatList, Text, Button } from "react-native";
+import React, { useMemo } from "react";
+import { View, StyleSheet, Text, Button, Image, Animated } from "react-native";
 import { useAppContext } from "~/contexts/AppContext";
 import { useDispatch, useSelector } from "react-redux";
-import PlaceItem from "~/components/UI/PlaceItem";
+import PlaceItem from "~/components/common/PlaceItem";
 // import * as LocalAuthentication from "expo-local-authentication";
 import _ from "lodash";
 import { clearAllPlacesAction } from "~/store/place/placeAction";
@@ -20,6 +20,8 @@ export default function AddressListScreen(props) {
     return _.values(selectedPlace);
   }, [selectedPlace]);
 
+  const scrollY = React.useRef(new Animated.Value(0)).current;
+
   return (
     <View
       style={{
@@ -32,11 +34,34 @@ export default function AddressListScreen(props) {
         onPress={() => dispatch(clearAllPlacesAction())}
       /> */}
       {memoizedPlaces.length ? (
-        <FlatList
-          data={memoizedPlaces}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <PlaceItem {...item} />}
-        />
+        <React.Fragment>
+          <Image
+            source={require("~/assets/rose.jpg")}
+            style={StyleSheet.absoluteFillObject}
+            resizeMode="contain"
+            blurRadius={10}
+          />
+          <Animated.FlatList
+            data={memoizedPlaces}
+            onScroll={Animated.event(
+              [
+                {
+                  nativeEvent: { contentOffset: { y: scrollY } },
+                },
+              ],
+              {
+                useNativeDriver: true,
+              }
+            )}
+            contentContainerStyle={{
+              padding: 15,
+            }}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <PlaceItem {...item} scrollY={scrollY} index={index} />
+            )}
+          />
+        </React.Fragment>
       ) : (
         <View style={{ ...globalStyles.centerScreen }}>
           <Text style={{ color: appColors.text, ...styles.text }}>

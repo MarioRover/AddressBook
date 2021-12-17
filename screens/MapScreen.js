@@ -1,10 +1,10 @@
 import React, { useLayoutEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import MapComponent from "~/components/UI/MapComponent";
+import MapComponent from "~/components/common/MapComponent";
 import { useAppContext } from "~/contexts/AppContext";
 import { useNavigation } from "@react-navigation/core";
 import ScreenNames from "~/constant/ScreenNames";
-import HeaderButton from "~/components/UI/HeaderButton";
+import HeaderButton from "~/components/common/HeaderButton";
 import { Colors } from "~/constant/Colors";
 
 export default function MapScreen({ route }) {

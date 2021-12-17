@@ -1,8 +1,8 @@
 import React from "react";
 import { View, StyleSheet, Switch } from "react-native";
 import { useAppContext } from "~/contexts/AppContext";
-import Row from "~/components/UI/Row";
-import Label from "~/components/UI/Label";
+import Row from "~/components/common/Row";
+import Label from "~/components/common/Label";
 
 export default function SettingsScreen() {
   const { isDark, appColors, toggleTheme } = useAppContext();

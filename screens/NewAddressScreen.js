@@ -25,11 +25,11 @@ import { addPlaceAction } from "~/store/place/placeAction";
 import { updatePlace, deletePlace } from "~/store/place/placeReducer";
 
 // Component
-import HeaderButton from "~/components/UI/HeaderButton";
-import Input from "~/components/UI/Input";
-import ImagePicker from "~/components/UI/ImagePicker";
+import HeaderButton from "~/components/common/HeaderButton";
+import Input from "~/components/common/Input";
+import ImagePicker from "~/components/common/ImagePicker";
 import ScreenNames from "~/constant/ScreenNames";
-import CustomButton from "~/components/UI/CustomButton";
+import CustomButton from "~/components/common/CustomButton";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
